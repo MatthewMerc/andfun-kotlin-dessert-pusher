@@ -18,6 +18,7 @@ package com.example.android.dessertpusher
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -29,6 +30,10 @@ import com.example.android.dessertpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
+
+    private val TIME_SECONDS = "time_seconds"
+    private val KEY_REVENUE = "key_revenue"
+    private val AMOUNT_SOLD = "amount_sold"
 
     private var revenue = 0
     private var dessertsSold = 0
@@ -81,6 +86,12 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         // TODO (03) Check here if the Bundle savedInstanceState is null. If it isn't, get the
         // three values you saved and restore them: revenue, desserts sold and the timer's
         // seconds count. Also make sure to show the correct image resource.
+
+        if (savedInstanceState != null) {
+            revenue = savedInstanceState.getInt(KEY_REVENUE)
+            dessertsSold = savedInstanceState.getInt(AMOUNT_SOLD)
+            dessertTimer.secondsCount = savedInstanceState.getInt(TIME_SECONDS)
+        }
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -190,5 +201,12 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onRestart() {
         super.onRestart()
         Timber.i("onRestart Called")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(AMOUNT_SOLD, dessertsSold)
+        outState.putInt(TIME_SECONDS, dessertTimer.secondsCount)
     }
 }
